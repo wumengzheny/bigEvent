@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>文章列表</title>
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/iconfont.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <script src="js/jquery-1.12.4.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="common_title">
+        用户信息修改
+      </div>
+      <div class="container-fluid common_con">
+        <form class="form-horizontal article_form">
+          <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label"
+              >用户名称：</label
+            >
+            <div class="col-sm-4">
+              <input
+                type="text"
+                class="form-control username"
+                name="username"
+                value="李思思"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label"
+              >昵称：</label
+            >
+            <div class="col-sm-4">
+              <input
+                type="text"
+                class="form-control nickname"
+                name="nickname"
+                value="思思"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label"
+              >邮箱：</label
+            >
+            <div class="col-sm-4">
+              <input
+                type="text"
+                class="form-control email"
+                name="email"
+                value="lisisi@126.com"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label"
+              >用户图标：</label
+            >
+            <div class="col-sm-10">
+              <img src="images/2.jpg" alt="" class="user_pic" />
+              <br />
+              <label
+                for="exampleInputFile"
+                class="glyphicon glyphicon-upload"
+                style="font-size: 40px;color:yellowgreen"
+              ></label>
+              <input
+                style="opacity: 0"
+                type="file"
+                id="exampleInputFile"
+                name="user_pic"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label"
+              >密码：</label
+            >
+            <div class="col-sm-4">
+              <input
+                type="password"
+                class="form-control password"
+                name="password"
+                value="12345678"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-success">修改</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- 自己的js -->
+    <script>
+      /*
+        获取用户的详细信息
+            请求地址：https://autumnfish.cn/big/admin/userinfo_get
+            请求方式：get
+            请求参数：无
+            进入之后，获取用户的信息，渲染到页面上
+            步骤
+            1. 进入个人中心之后
+            2. 调用获取用户详细信息接口
+            3. 数据获取到之后 渲染到 页面上
+
+        本地图片预览
+          1. 为input file 绑定change事件 
+          2. 获取this.files[0]
+          3. 调用方法生成url
+          4. 设置给隔壁的img即可
+
+        保存修改
+          请求地址：https://autumnfish.cn/big/admin/userinfo_edit
+          请求方式：post
+          请求参数：使用formdata提交
+          步骤
+          1. 为修改按钮绑定点击事件
+          2. 获取表单数据
+          3. 通过ajax 结合formData发送到服务器
+          4. 返回数据之后，提示用户
+        */
+      $(function() {
+        // 调用接口
+        $.ajax({
+          url: 'https://autumnfish.cn/big/admin/userinfo_get',
+          type: 'get',
+          success: function(backData) {
+            // console.log(backData)
+            // 挨个设置内容
+            for (const key in backData.data) {
+              $('input.' + key).val(backData.data[key])
+            }
+            // 头像
+            $('.user_pic').attr('src', backData.data.user_pic)
+          }
+        })
+
+        // change事件
+        $('#exampleInputFile').change(function() {
+          // files是dom元素的属性
+          var file = this.files[0]
+          // 生成url
+          var url = URL.createObjectURL(file)
+          // 设置给img
+          // $(this)
+          //   .prev()
+          //   .attr('src', url)
+          $(this).siblings('img').attr('src',url)
+        })
+
+        // 保存按钮的点击事件
+        $('.btn-success').click(function(e) {
+          e.preventDefault()
+          // 实例化formData
+          var formData = new FormData($('form')[0])
+          $.ajax({
+            url: 'https://autumnfish.cn/big/admin/userinfo_edit',
+            type: 'post',
+            data: formData,
+            // 不设置头
+            contentType: false,
+            // 不把数据变字符串
+            processData: false,
+            success: function(backData) {
+              console.log(backData)
+            }
+          })
+        })
+      })
+    </script>
+  </body>
+</html>

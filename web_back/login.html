@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>大事件-后台登录页</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <!-- 导入bs的样式 -->
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css" />
+  </head>
+
+  <body>
+    <div class="main_wrap">
+      <div class="header">
+        <a href="#" class="logo"><img src="images/logo.png" alt=""/></a>
+        <div class="copyright">
+          CopyRight © 2019 深圳百秀信息技术股份有限公司<br />All Rights Reserved
+        </div>
+      </div>
+
+      <div class="login_form_con">
+        <div class="login_title"></div>
+        <form class="login_form">
+          <i class="iconfont icon-user"></i>
+          <i class="iconfont icon-key"></i>
+          <input type="text" class="input_txt" placeholder="邮箱/手机号" />
+          <input type="password" class="input_pass" placeholder="密码" />
+          <input type="submit" class="input_sub" value="登 录" />
+        </form>
+      </div>
+    </div>
+    <!-- bootstarp的弹出框 -->
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">提示!!!</h4>
+            </div>
+            <div class="modal-body">
+              <!-- 这里用来放置模态框的内容 -->
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+              <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+  </body>
+</html>
+<!-- 导入jq -->
+<script src="./js/jquery-1.12.4.min.js"></script>
+<!-- 导入bs的js -->
+<script src="./js/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  /*
+    功能分析：
+      1 对输入框的内容进行检测，不能为空，如果为空进行提示
+        - .input_txt  .input_pass 
+      2 将用户名和密码发送给接口进行检测 .input-sub
+        - 2.1 登录成功（admin和123456），跳转到index.html
+        - 2.2 登录失败，提示用户
+  */
+
+  $('.input_sub').on('click', function (e) {
+    // 阻止默认的提交
+    e.preventDefault();
+
+    // 检测内容是否为空(失败检测)
+    if ($('.input_txt').val() === '' || $('.input_pass').val() === '') {
+      // 通过设置的模态框将提示信息展示
+      $('.modal-body').text('内容没有填写完毕');
+      $('#myModal').modal();
+      return;
+    }
+
+    // 将用户名和密码提交给接口
+    $.post({
+      url : 'https://autumnfish.cn/big/admin/login',
+      data : {
+        user_name : $('.input_txt').val(),
+        password : $('.input_pass').val()
+      },
+      success : function (res) {
+        // 检测登录是否成功
+        if (res.code === 200) {
+          // 跳转到index.html
+          location.href = 'index.html';
+        } else if (res.code === 400) {
+          // 通过模态框显示提示信息
+          $('.modal-body').text('用户名或密码错误');
+          $('#myModal').modal();
+        }
+      }
+    });
+  });
+
+
+</script>
