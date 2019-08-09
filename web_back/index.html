@@ -20,7 +20,7 @@
         <a href="#" class="logo"><img src="images/logo02.png" alt="logo" /></a>
         <div class="user_info">
             <img src="images/2.jpg" alt="person" />
-            <span>欢迎&nbsp;&nbsp;<i>李思思</i></span>
+            <span>欢迎&nbsp;&nbsp;<i>李思思123</i></span>
             <b>管理员</b>
         </div>
         <div class="menu">
@@ -191,31 +191,38 @@
     <!-- 自己的逻辑 -->
     <script>
         /*
-                        功能分析：
-                          - 1 用户退出登录
-                            - 获取方式 $('.user_center_link>a').eq(1)  或者自己设置类名操作也行
-                            - 请求接口，告诉服务端我退出了
-                              - 可以通过模态框设置一个确认操作
-                                - 退出成功，跳转到登录页面
-                                - 如果点击取消，不进行跳转
-                      */
+                                                           功能分析：
+                                                             - 1 用户退出登录
+                                                               - 获取方式 $('.user_center_link>a').eq(1)  或者自己设置类名操作也行
+                                                               - 请求接口，告诉服务端我退出了
+                                                                 - 可以通过模态框设置一个确认操作
+                                                                   - 退出成功，跳转到登录页面
+                                                                   - 如果点击取消，不进行跳转
+                                                         */
 
         $('.user_center_link>a').eq(1).on('click', function() {
-            // 设置模态框进行确认(我错了，modal和confirm不一样，没有返回truefalse)
             $('#myModal').modal();
         });
-
-        设置离开按钮的点击事件
         $('.btn-leave').on('click', function() {
-            // 发送请求：
             $.post({
                 url: 'https://autumnfish.cn/big/admin/logout',
                 success: function(res) {
-                    // 直接进行跳转
                     location.href = 'login.html';
                 }
-            });
-        });
+            })
+        })
+
+
+        $.get({
+            url: 'https://autumnfish.cn/big/admin/getuser',
+            success: function(res) {
+                console.log(res);
+                if (res.code === 200) {
+                    $('.user_info img ,.user_center_link img').css('src', res.data.user_pic)
+                    $('.user_info i').text(res.data.nickname);
+                }
+            }
+        })
     </script>
 
 </body>
